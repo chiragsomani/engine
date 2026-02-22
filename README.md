@@ -25,7 +25,7 @@ engine-docker-setup/
 ```
 
 
-Step 1 Installation & Setup 
+#### Step 1 Installation & Setup 
 ```
 mkdir engine-docker-setup
 cd engine-docker-setup
@@ -33,7 +33,7 @@ cd engine-docker-setup
 Copy/clone projects  Copy your trading engine files (files in this repo) into engine/subfolder
 Copy/clone OpenAlgo (https://github.com/marketcalls/openalgo.git) into openalgo/subfolder
 
-Step 2 
+#### Step 2 
 Create .env file in root ( inside engine-docker-setup folder)
 Add following 2 keys::
 ```
@@ -52,9 +52,63 @@ REDIRECT_URL = 'http://127.0.0.1:5000/<yourBrokerHere>/callback'
 APP_KEY='<yourOlgoKey>'
 ```
 
-Step 3 Create docker-compose.yaml file inside engine-docker-setup folder & copy the contents for it from the repo's docker-compose.yaml file
+#### Step 3 Create docker-compose.yaml file inside engine-docker-setup folder & paste below the contents to it
+```
+version: '3.9'
 
-Step 4 
+services:
+  openalgo:
+    build:
+      context: ./openalgo
+      dockerfile: Dockerfile
+    container_name: openalgo-server
+    ports:
+      - "5000:5000"
+      - "8765:8765"
+    volumes:
+      - openalgo_db:/app/db
+      - openalgo_log:/app/log
+      - openalgo_strategies:/app/strategies
+      - openalgo_keys:/app/keys
+      - openalgo_tmp:/app/tmp
+      - ./.env:/app/.env:ro         
+    environment:
+      - FLASK_ENV=production
+      - TZ=Asia/Kolkata
+      - OPENBLAS_NUM_THREADS=2
+      - OMP_NUM_THREADS=2
+      - MKL_NUM_THREADS=2
+      - NUMEXPR_NUM_THREADS=2
+      - NUMBA_NUM_THREADS=2
+      - STRATEGY_MEMORY_LIMIT_MB=1024
+    shm_size: 512m
+    restart: unless-stopped
+
+  trading-engine:
+    build:
+      context: ./engine
+      dockerfile: Dockerfile
+    container_name: trading-engine
+    ports:
+      - "5001:5001"
+    depends_on:
+      - openalgo
+    environment:
+      - OPENALGO_BASE_URL=http://openalgo:5000
+      - API_KEY=${API_KEY}
+      - STRATEGY=${STRATEGY}       
+      - FLASK_ENV=production
+    restart: unless-stopped
+
+volumes:
+  openalgo_db:
+  openalgo_log:
+  openalgo_strategies:
+  openalgo_keys:
+  openalgo_tmp:
+```
+
+#### Step 4 
 Open WSL from start menu and run the following command
 ```
 cd /mnt/c/Users/chirag/engine-docker-setup
