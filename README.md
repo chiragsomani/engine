@@ -1,5 +1,11 @@
 Project structure: 
 
+markdown
+
+# OpenAlgo + Custom Trading Engine Setup
+
+## Project Structure
+
 engine-docker-setup/
 ├── .env                        # All configuration & secrets (do NOT commit!)
 ├── docker-compose.yaml         # Orchestrates both services
@@ -15,6 +21,8 @@ engine-docker-setup/
 └── openalgo/                   # Cloned or copied OpenAlgo project
     ├── Dockerfile              # Official multi-stage build
     └── ... (rest of OpenAlgo files)
+
+
 
 Step 1 Installation & Setup 
 mkdir engine-docker-setup
@@ -36,7 +44,7 @@ WEBSOCKET_HOST='0.0.0.0'
 WEBSOCKET_URL='ws://localhost:8765'
 ZMQ_HOST='0.0.0.0'
 REDIRECT_URL = 'http://127.0.0.1:5000/<yourBrokerHere>/callback'
-APP_KEY='<yourOpenAlgoKey>'
+APP_KEY='<yourOlgoKey>'
 
 
 Step 3 Create docker-compose.yal file inside engine-docker-setup
