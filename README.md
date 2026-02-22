@@ -4,7 +4,25 @@ Project structure:
 
 ## Project Structure
 
-<img width="653" height="429" alt="image" src="https://github.com/user-attachments/assets/07edc5f5-d9c0-4607-b22b-226720faeaea" />
+```
+engine-docker-setup/
+├── .env                        # All configuration & secrets (do NOT commit!)
+├── docker-compose.yaml         # Orchestrates both services
+├── engine/                     # Your custom trading engine
+│   ├── app.py                  # Flask server (start/stop/status)
+│   ├── config.py               # Loads env vars safely
+│   ├── openalgo_calls.py       # API wrappers for OpenAlgo
+│   ├── data_fetcher.py         # Stock scanner + 5-min data loop
+│   ├── trading_engine.py       # Position/PnL/risk management logic
+│   ├── indicators.py           # RSI, MACD, BB, EMA, Stoch, ADX, ATR
+│   ├── Dockerfile              # Builds trading-engine image
+│   └── requirements.txt
+└── openalgo/                   # Cloned or copied OpenAlgo project
+    ├── Dockerfile              # Official multi-stage build
+    └── ... (rest of OpenAlgo files)
+
+
+```
 
 
 Step 1 Installation & Setup 
